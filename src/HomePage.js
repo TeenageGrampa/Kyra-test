@@ -13,7 +13,8 @@ class HomePage extends Component {
         videos: [],
         firstpage: true,
         nextpage: '',
-        chartshown: false
+        chartshown: false,
+        modal: false
     }
 
     componentDidMount(){
@@ -114,7 +115,6 @@ class HomePage extends Component {
         const dateobjs = datearr.map(function(value, i) {
             return {date: value, count: numarr[i]};
         })
-        console.log(dateobjs)
         return dateobjs
     }
 
@@ -140,9 +140,33 @@ class HomePage extends Component {
         return result.map(result => result.length)
     }
 
+    showModal = (count, date) =>{
+        this.setState({
+            modal: true,
+            count: count,
+            date: date
+        })
+    }
+
+    hideModal = () => {
+        this.setState({
+            modal: false
+        })
+    }
+
     render(){
         return(
             <div className="container">
+                {this.state.modal === true ? 
+                <div className="modal-background" style={{zIndex: 600, }} onClick={this.hideModal}>
+                    <div className="modal-card" onClick={this.hideModal}>
+                        <div className="modal-card-body" onClick={this.hideModal} style={{borderRadius: 15, marginTop: '25%'}}>
+                            <p>Date: {this.state.date}</p>
+                            <p>Count: {this.state.count}</p>
+                        </div>
+                    </div>
+                </div>
+                : null}
                 <div style={{marginTop: 10}}>
                     <h1 className="title">PAQ's Channel</h1>
                     {this.state.chartshown ?
@@ -158,7 +182,7 @@ class HomePage extends Component {
                             }
                             return `color-scale-${value.count}`;
                           }}
-                        onClick={(value) => alert(value.count)}
+                        onClick={(value) => this.showModal(value.count, value.date)}
                         />
                     </div> 
                     : <button onClick={this.toggleChart} style={{margin: 5}}>Show Channel Analysis</button>}
