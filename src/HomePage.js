@@ -20,7 +20,8 @@ class HomePage extends Component {
     componentDidMount(){
         this.getData()
         this.showchart()
-        setInterval(this.getData, 5000)
+        // code below updates every 5 seconds
+        // setInterval(this.getData, 5000)
     }
     
     getData = async (pageNum) => {
@@ -62,6 +63,7 @@ class HomePage extends Component {
     }
 
     showchart = async () => {
+        // first part of code gets 18 months wort of data
         const token = this.state.nextpage
         const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${APIKEY}&channelId=${chanId}&part=snippet,id&order=date&maxResults=50&pageToken=${token}`)    
         const ytjson = await res.json()
@@ -69,6 +71,7 @@ class HomePage extends Component {
         const res2 = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${APIKEY}&channelId=${chanId}&part=snippet,id&order=date&maxResults=50&pageToken=${ytjson.nextPageToken}`) 
         const ytjson2 = await res2.json()
         const uploads3 = ytjson2.items.map(video => video.snippet.publishedAt.substring(0, 10))
+        // then it concats to one array
         const uploadtimes = this.state.chartdata.concat(uploads2).concat(uploads3)
         const datearray = this.sortDates(uploadtimes)
         this.setState({
@@ -77,6 +80,7 @@ class HomePage extends Component {
     }
 
     sortDates = (dates) => {
+        // reduces and sorts dates into separate arrays by month
         let groupedDates = dates.reduce(function(l, r) {
             let keyParts = r.split("-"),
                 key = keyParts[1] + keyParts[0];
@@ -95,7 +99,9 @@ class HomePage extends Component {
                             .map(function(key) {
                                 return groupedDates[key];
                             });
+        // makes sure we only keep 18 months 
         result.length = 18
+        // then sort 
         const formattedDates = result.flat(1)
         return formattedDates.sort(function(a,b){
             return new Date(b) - new Date(a);
@@ -119,6 +125,7 @@ class HomePage extends Component {
     }
 
     countdates = (array) => {
+        // counts how many times a date occurs in array 
         let groupedDates = array.reduce(function(l, r) {
             let keyParts = r.split("-"),
                 key = keyParts[1] + keyParts[0] + keyParts[2];
