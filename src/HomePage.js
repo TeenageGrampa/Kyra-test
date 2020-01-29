@@ -20,7 +20,7 @@ class HomePage extends Component {
     componentDidMount(){
         this.getData()
         this.showchart()
-        // setInterval(this.getData, 5000)
+        setInterval(this.getData, 5000)
     }
     
     getData = async (pageNum) => {
